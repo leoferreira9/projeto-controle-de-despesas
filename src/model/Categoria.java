@@ -7,6 +7,10 @@ public class Categoria {
 
     public Categoria(){}
 
+    public Categoria(String nome){
+        this.nome = nome;
+    }
+
     public Categoria(int id, String nome){
         this.id = id;
         this.nome = nome;
@@ -26,6 +30,6 @@ public class Categoria {
 
     @Override
     public String toString() {
-        return "Categoria: " + getNome();
+        return getId() + " - Categoria: " + getNome();
     }
 }
