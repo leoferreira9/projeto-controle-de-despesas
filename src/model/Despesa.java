@@ -15,6 +15,13 @@ public class Despesa {
 
     public Despesa(){}
 
+    public Despesa(String descricao, BigDecimal valor, LocalDate data, Categoria categoria){
+        this.descricao = descricao;
+        this.valor = valor;
+        this.data = data;
+        this.categoria = categoria;
+    }
+
     public Despesa(int id, String descricao, BigDecimal valor, LocalDate data, Categoria categoria){
         this.id = id;
         this.descricao = descricao;
