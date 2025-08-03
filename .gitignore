@@ -12,3 +12,4 @@ Thumbs.db
 
 # Banco de dados local
 database/*.db
+database/db.properties
