@@ -1,0 +1,16 @@
+CREATE DATABASE IF NOT EXISTS controle_despesas;
+USE controle_despesas;
+
+CREATE TABLE IF NOT EXISTS categoria (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS despesa (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    descricao VARCHAR(255) NOT NULL,
+    valor DECIMAL(10, 2) NOT NULL,
+    data DATE NOT NULL,
+    categoria_id INT,
+    FOREIGN KEY(categoria_id) REFERENCES categoria(id) ON DELETE SET NULL ON UPDATE CASCADE
+);
