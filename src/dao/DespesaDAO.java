@@ -26,34 +26,40 @@ public class DespesaDAO {
             stmt.setBigDecimal(2, despesa.getValor());
             stmt.setDate(3, java.sql.Date.valueOf(despesa.getData()));
             stmt.setInt(4, despesa.getCategoria().getId());
-            stmt.execute();
 
-            System.out.println("Despesa criada com sucesso!");
+            int rows = stmt.executeUpdate();
+
+            if (rows > 0) {
+                System.out.println("\n✅ Despesa criada com sucesso!");
+            } else {
+                System.out.println("\n❌ Nenhuma despesa criada.");
+            }
 
         }catch (SQLException e){
-            throw new RuntimeException("Falha na inserção de dados na tabela Despesa", e);
+            throw new RuntimeException("\n❌ Falha na inserção de dados na tabela Despesa", e);
         }
     }
 
     public List<Despesa> listarTodas(){
-        String selectSQL = "SELECT d.id, d.descricao, d.valor, d.data, c.id " +
-                "FROM despesa d INNER JOIN categoria c ON d.categoria_id = c.id";
+        String selectSQL = "SELECT d.id AS despesa_id, d.descricao, d.valor, d.data, " +
+                "c.id AS categoria_id, c.nome AS categoria_nome " +
+                "FROM despesa d INNER JOIN categoria c ON d.categoria_id = c.id ORDER BY data ASC";
 
         List<Despesa> despesas = new ArrayList<>();
-        CategoriaDAO categoriaDAO = new CategoriaDAO();
 
         try (Connection conexao = DB.getConnection();
             PreparedStatement stmt = conexao.prepareStatement(selectSQL)){
 
             try (ResultSet resultado = stmt.executeQuery()){
                 while(resultado.next()){
-                    int despesaID = resultado.getInt("id");
+                    int despesaID = resultado.getInt("despesa_id");
                     String despesaDescricao = resultado.getString("descricao");
                     BigDecimal despesaValor = resultado.getBigDecimal("valor");
                     LocalDate despesaData = resultado.getDate("data").toLocalDate();
-                    int despesaCategoriaID = resultado.getInt(5);
+                    int despesaCategoriaID = resultado.getInt("categoria_id");
+                    String categoriaNome = resultado.getString("categoria_nome");
 
-                    Categoria categoria = categoriaDAO.buscarPorId(despesaCategoriaID);
+                    Categoria categoria = new Categoria(despesaCategoriaID, categoriaNome);
                     Despesa despesa = new Despesa(despesaID, despesaDescricao,
                             despesaValor, despesaData, categoria);
 
@@ -62,8 +68,28 @@ public class DespesaDAO {
             }
             return despesas;
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao listar despesas", e);
+            throw new RuntimeException("\n❌ Falha ao listar despesas", e);
         }
+    }
+
+    public List<Despesa> listarPorCategoria(int id){
+        String selectSQL = "SELECT * FROM despesa WHERE categoria_id = ?";
+        List<Despesa> despesas = new ArrayList<>();
+
+        try (Connection conexao = DB.getConnection();
+            PreparedStatement stmt = conexao.prepareStatement(selectSQL)){
+
+            stmt.setInt(1, id);
+            try (ResultSet resultado = stmt.executeQuery()){
+                while(resultado.next()){
+                    despesas.add(buscarPorId(resultado.getInt("id")));
+                }
+            }
+        }catch (SQLException e){
+            throw new RuntimeException("❌ Erro ao buscar despesas por categoria", e);
+        }
+
+        return despesas;
     }
 
     public Despesa buscarPorId(int id){
@@ -83,7 +109,7 @@ public class DespesaDAO {
             }
             return null;
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao buscar despesa por ID", e);
+            throw new RuntimeException("\n❌ Falha ao buscar despesa por ID", e);
         }
     }
 
@@ -98,11 +124,17 @@ public class DespesaDAO {
             stmt.setDate(3, java.sql.Date.valueOf(despesa.getData()));
             stmt.setInt(4, despesa.getCategoria().getId());
             stmt.setInt(5, id);
-            stmt.execute();
 
-            System.out.println("Despesa atualizada com sucesso!");
+            int rows = stmt.executeUpdate();
+
+            if (rows > 0) {
+                System.out.println("\n✅ Despesa atualizada com sucesso!");
+            } else {
+                System.out.println("\n❌ Nenhuma despesa atualizada.");
+            }
+
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao atualizar despesa", e);
+            throw new RuntimeException("\n❌ Falha ao atualizar despesa", e);
         }
     }
 
@@ -113,15 +145,22 @@ public class DespesaDAO {
              PreparedStatement stmt = conexao.prepareStatement(removeSQL)){
 
             stmt.setInt(1, id);
-            stmt.execute();
-            System.out.println("Despesa removida com sucesso!");
+
+            int rows = stmt.executeUpdate();
+
+            if (rows > 0) {
+                System.out.println("\n✅ Despesa removida com sucesso!");
+            } else {
+                System.out.println("\n❌ Nenhuma despesa removida.");
+            }
+
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao remover despesa", e);
+            throw new RuntimeException("\n❌ Falha ao remover despesa", e);
         }
     }
 
     public List<Despesa> filtrarPorPeriodo(LocalDate inicio, LocalDate fim){
-        String selectSQL = "SELECT * FROM despesa WHERE data >= ? AND data <= ?";
+        String selectSQL = "SELECT * FROM despesa WHERE data >= ? AND data <= ? ORDER BY data ASC";
         List<Despesa> despesas = new ArrayList<>();
         CategoriaDAO categoriaDAO = new CategoriaDAO();
 
@@ -146,7 +185,7 @@ public class DespesaDAO {
             }
             return despesas;
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao filtrar despesas por período", e);
+            throw new RuntimeException("\n❌ Falha ao filtrar despesas por período", e);
         }
     }
 
@@ -172,7 +211,7 @@ public class DespesaDAO {
             }
             return total;
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao calcular despesa", e);
+            throw new RuntimeException("\n❌ Falha ao calcular despesa", e);
         }
     }
 

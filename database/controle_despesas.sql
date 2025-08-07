@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS despesa (
     valor DECIMAL(10, 2) NOT NULL,
     data DATE NOT NULL,
     categoria_id INT,
-    FOREIGN KEY(categoria_id) REFERENCES categoria(id) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY(categoria_id) REFERENCES categoria(id) ON DELETE CASCADE ON UPDATE CASCADE
 );

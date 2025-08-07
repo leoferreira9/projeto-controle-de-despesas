@@ -17,17 +17,22 @@ public class CategoriaDAO {
              PreparedStatement stmt = conexao.prepareStatement(insertSQL)){
 
             stmt.setString(1, categoria.getNome());
-            stmt.execute();
+            int rows = stmt.executeUpdate();
 
-            System.out.println("Categoria criada com sucesso!");
+            if(rows > 0){
+                System.out.println("\n✅ Categoria criada com sucesso!");
+            } else {
+                System.out.println("\n❌ Nenhuma categoria criada.");
+            }
+
         }catch (SQLException e){
-            throw new RuntimeException("Falha na inserção de dados na tabela Categoria", e);
+            throw new RuntimeException("\n❌ Falha na inserção de dados na tabela Categoria", e);
         }
     }
 
     public List<Categoria> listarTodas(){
 
-        String selectSQL = "SELECT * FROM categoria";
+        String selectSQL = "SELECT * FROM categoria ORDER BY nome";
         List<Categoria> categorias = new ArrayList<>();
 
         try (Connection conexao = DB.getConnection();
@@ -41,7 +46,7 @@ public class CategoriaDAO {
 
             return categorias;
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao listar categorias", e);
+            throw new RuntimeException("\n❌ Falha ao listar categorias", e);
         }
     }
 
@@ -61,7 +66,7 @@ public class CategoriaDAO {
 
             return null;
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao buscar categoria por ID", e);
+            throw new RuntimeException("\n❌ Falha ao buscar categoria por ID", e);
         }
     }
 
@@ -73,11 +78,17 @@ public class CategoriaDAO {
 
             stmt.setString(1, categoria.getNome());
             stmt.setInt(2, categoria.getId());
-            stmt.execute();
 
-            System.out.println("Categoria atualizada com sucesso!");
+            int rows = stmt.executeUpdate();
+
+            if(rows > 0){
+                System.out.println("\n✅ Categoria atualizada com sucesso!");
+            } else {
+                System.out.println("\n❌ Nenhuma categoria atualizada.");
+            }
+
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao atualizar categoria", e);
+            throw new RuntimeException("\n❌ Falha ao atualizar categoria", e);
         }
     }
 
@@ -92,15 +103,22 @@ public class CategoriaDAO {
 
             if(categoria != null){
                 stmt.setInt(1, id);
-                stmt.execute();
-                System.out.println("Categoria excluída com sucesso!");
+
+                int rows = stmt.executeUpdate();
+
+                if(rows > 0){
+                    System.out.println("\n✅ Categoria removida com sucesso!");
+                } else {
+                    System.out.println("\n❌ Nenhuma categoria removida.");
+                }
+
             } else {
-                System.out.println("Nenhuma categoria foi encontrada");
+                System.out.println("\n❌ Nenhuma categoria foi encontrada");
             }
 
 
         }catch (SQLException e){
-            throw new RuntimeException("Falha ao remover categoria", e);
+            throw new RuntimeException("\n❌ Falha ao remover categoria", e);
         }
     }
 

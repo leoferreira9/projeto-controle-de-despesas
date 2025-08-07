@@ -69,10 +69,11 @@ public class Despesa {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String nomeCategoria = (categoria != null) ? categoria.getNome() : "Sem categoria";
 
         return String.format(
-                "\nDescrição: %s\nValor: %.2f\nData: %s\nCategoria: %s",
-                descricao, valor, data.format(formatter), categoria.getNome()
+                "\nDescrição: %s | ID: %d\nValor: %.2f\nData: %s\nCategoria: %s",
+                descricao, id, valor, data.format(formatter), nomeCategoria
         );
     }
 }

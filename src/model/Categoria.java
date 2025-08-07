@@ -30,6 +30,6 @@ public class Categoria {
 
     @Override
     public String toString() {
-        return getId() + " - Categoria: " + getNome();
+        return "ID: " + getId() + " - Categoria: " + getNome();
     }
 }

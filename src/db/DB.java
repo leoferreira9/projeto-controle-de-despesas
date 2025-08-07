@@ -12,13 +12,14 @@ public class DB {
     public static Connection getConnection(){
         try {
             Properties prop = getProperties();
-            String url = prop.getProperty("db.url");
-            String user = prop.getProperty("db.user");
-            String password = prop.getProperty("db.password");
-
-            return DriverManager.getConnection(url, user, password);
+            return DriverManager.getConnection(
+                    prop.getProperty("db.url"),
+                    prop.getProperty("db.user"),
+                    prop.getProperty("db.password")
+            );
         }catch (SQLException e){
-            throw new RuntimeException("Erro ao conectar ao banco de dados", e);
+            System.err.println("❌ Erro ao conectar ao banco: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -28,7 +29,8 @@ public class DB {
             prop.load(fis);
             return prop;
         }catch (IOException e){
-            throw new RuntimeException("Erro ao carregar o arquivo de propriedades", e);
+            System.err.println("❌ Arquivo db.properties não encontrado ou inválido.");
+            throw new RuntimeException(e);
         }
     }
 
