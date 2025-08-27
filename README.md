@@ -52,8 +52,10 @@ db.url=jdbc:mysql://localhost:3306/controle_despesas
 db.user=seu_usuario
 db.password=sua_senha
 ```
+### 3. Adicionar driver
+- Adicione o Driver JDBC do MySQL (**mysql-connector-j-9.3.0**)
 
-### 3. Compile e execute o projeto
+### 4. Compile e execute o projeto
 ✅ Via terminal:
 ```bash
   javac -d bin src/app/*.java src/dao/*.java src/model/*.java src/db/*.java
